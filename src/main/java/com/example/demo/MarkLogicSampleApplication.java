@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.io.ByteArrayOutputStream;
+
 import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -16,65 +18,67 @@ import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.JAXBHandle;
 import com.marklogic.client.query.QueryManager;
+import com.marklogic.client.util.RequestLogger;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"com"})
+@ComponentScan(basePackages = { "com" })
 public class MarkLogicSampleApplication {
 
-    @Value("${marklogic.host}")
-    private String host;
+	@Value("${marklogic.host}")
+	private String host;
 
-    @Value("${marklogic.port}")
-    private int port;
+	@Value("${marklogic.port}")
+	private int port;
 
-    @Value("${marklogic.username}")
-    private String username;
+	@Value("${marklogic.username}")
+	private String username;
 
-    @Value("${marklogic.password}")
-    private String password;
+	@Value("${marklogic.password}")
+	private String password;
 
-    @Bean
-    public DatabaseClient getDatabaseClient() {
-        try {
-            // TODO: is this really (still) required?
-            // configure once before creating a client
-            DatabaseClientFactory.getHandleRegistry().register(
-                    JAXBHandle.newFactory(Product.class)
-            );
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+	@Bean
+	public DatabaseClient getDatabaseClient() {
+		try {
+			// TODO: is this really (still) required?
+			// configure once before creating a client
+			DatabaseClientFactory.getHandleRegistry().register(JAXBHandle.newFactory(Product.class));
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
 
-        return DatabaseClientFactory.newClient(host, port, username, password,
-                DatabaseClientFactory.Authentication.DIGEST);
-    }
+		return DatabaseClientFactory.newClient(host, port, username, password,
+				DatabaseClientFactory.Authentication.DIGEST);
+	}
 
-    @Bean
-    public QueryManager getQueryManager() {
-        return getDatabaseClient().newQueryManager();
-    }
+	@Bean
+	public QueryManager getQueryManager() {
+		RequestLogger logger = getDatabaseClient().newLogger(new ByteArrayOutputStream());
+		QueryManager manager = getDatabaseClient().newQueryManager();
+		manager.startLogging(logger);
+		return manager;
+	}
 
-    @Bean
-    public XMLDocumentManager getXMLDocumentManager() {
-        return getDatabaseClient().newXMLDocumentManager();
-    }
+	@Bean
+	public XMLDocumentManager getXMLDocumentManager() {
+		return getDatabaseClient().newXMLDocumentManager();
+	}
 
-    @Bean
-    public JSONDocumentManager getJSONDocumentManager() {
-        return getDatabaseClient().newJSONDocumentManager();
-    }
+	@Bean
+	public JSONDocumentManager getJSONDocumentManager() {
+		return getDatabaseClient().newJSONDocumentManager();
+	}
 
-    @Bean
-    public String getMarkLogicBaseURL() {
-        return String.format("http://%s:%d", host, port);
-    }
+	@Bean
+	public String getMarkLogicBaseURL() {
+		return String.format("http://%s:%d", host, port);
+	}
 
-    /**
-     * The entrance point to the sample application, starts Spring Boot.
-     */
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(MarkLogicSampleApplication.class, args);
-    }
+	/**
+	 * The entrance point to the sample application, starts Spring Boot.
+	 */
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(MarkLogicSampleApplication.class, args);
+	}
 
 }

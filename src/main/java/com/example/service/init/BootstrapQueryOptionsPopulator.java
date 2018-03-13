@@ -1,15 +1,9 @@
 package com.example.service.init;
 
-import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.admin.QueryOptionsManager;
-import com.marklogic.client.io.Format;
-import com.marklogic.client.io.QueryOptionsListHandle;
-import com.marklogic.client.io.StringHandle;
-import com.marklogic.client.io.ValuesHandle;
-import com.marklogic.client.query.CountedDistinctValue;
-import com.marklogic.client.query.QueryManager;
-import com.marklogic.client.query.RawCombinedQueryDefinition;
-import com.marklogic.client.query.ValuesDefinition;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,9 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Map;
+import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.admin.QueryOptionsManager;
+import com.marklogic.client.io.QueryOptionsListHandle;
+import com.marklogic.client.io.StringHandle;
+import com.marklogic.client.io.ValuesHandle;
+import com.marklogic.client.query.CountedDistinctValue;
+import com.marklogic.client.query.QueryManager;
+import com.marklogic.client.query.ValuesDefinition;
 
 /**
  * Initialize query options (surely roxy would be a more convenient solution).
@@ -42,7 +41,7 @@ public class BootstrapQueryOptionsPopulator implements InitializingBean {
 		logger.info("~~~ Initialize query options");
 		listExistingQueryOptions();
 		defineQueryOptions();
-		//testQueryOptions();
+		// testQueryOptions();
 	}
 
 	private void listExistingQueryOptions() {
@@ -59,10 +58,16 @@ public class BootstrapQueryOptionsPopulator implements InitializingBean {
 		String xmlOptions = FileCopyUtils
 				.copyToString(new FileReader("src/main/resources/queries/options-distinct-values.xml"));
 		StringHandle writeHandle = new StringHandle(xmlOptions);
-		RawCombinedQueryDefinition queryDef = queryManager.newRawCombinedQueryDefinitionAs(Format.XML, xmlOptions);
+		// RawCombinedQueryDefinition queryDef =
+		// queryManager.newRawCombinedQueryDefinitionAs(Format.XML, xmlOptions);
 
 		// See Java Developer Guide (ch 3.11.2.2 "Install Query Options")
 		optionsMgr.writeOptions("distinct-values", writeHandle);
+
+		xmlOptions = FileCopyUtils.copyToString(new FileReader("src/main/resources/queries/options-avg-score.xml"));
+		writeHandle = new StringHandle(xmlOptions);
+		optionsMgr.writeOptions("score", writeHandle);
+
 		logger.info("Registered query options successfully.");
 	}
 

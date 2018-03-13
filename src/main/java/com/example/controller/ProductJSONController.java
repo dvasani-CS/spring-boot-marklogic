@@ -20,71 +20,73 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.domain.Product;
 import com.example.domain.ProductSearchResult;
+import com.example.domain.Record;
+import com.example.domain.RecordSearchResult;
 import com.example.service.ProductJSONRepository;
+import com.example.service.RecordJSONRepository;
 import com.marklogic.client.ResourceNotFoundException;
 
 @RestController
 public class ProductJSONController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductJSONController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProductJSONController.class);
 
-    @Autowired
-    protected ProductJSONRepository productJSONRepository;
+	@Autowired
+	protected ProductJSONRepository productJSONRepository;
 
-    @RequestMapping(
-            value = "/products",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<String> createProduct(@RequestBody Product product, UriComponentsBuilder builder) {
-        productJSONRepository.add(product);
+	@Autowired
+	protected RecordJSONRepository recordJSONRepository;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(
-                builder.path("/products/{id}.json")
-                        .buildAndExpand(product.getSku()).toUri());
+	@RequestMapping(value = "/products", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createProduct(@RequestBody Product product, UriComponentsBuilder builder) {
+		productJSONRepository.add(product);
 
-        return new ResponseEntity<>("", headers, HttpStatus.CREATED);
-    }
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(builder.path("/products/{id}.json").buildAndExpand(product.getSku()).toUri());
 
-    @RequestMapping(
-            value = "/products/{sku}.json",
-            method = RequestMethod.DELETE
-    )
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProduct(@PathVariable("sku") Long sku) {
-        productJSONRepository.remove(sku);
-    }
+		return new ResponseEntity<>("", headers, HttpStatus.CREATED);
+	}
 
-    @RequestMapping(
-            value = "/products/{sku}.json",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public Product readProduct(@PathVariable("sku") Long sku) {
-        return productJSONRepository.findBySku(sku);
-    }
+	@RequestMapping(value = "/products/{sku}.json", method = RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteProduct(@PathVariable("sku") Long sku) {
+		productJSONRepository.remove(sku);
+	}
 
-    @RequestMapping(
-            value = "/products.json",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ProductSearchResult searchProducts(@RequestParam(required = false, value = "name") String name) {
-        if (StringUtils.isEmpty(name)) {
-            logger.info("Lookup all {} products...", productJSONRepository.count());
-            return productJSONRepository.findAll();
-        } else {
-            logger.info("Lookup products by name: {}", name);
-            return productJSONRepository.findByName(name);
-        }
-    }
+	@RequestMapping(value = "/products/{sku}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Product readProduct(@PathVariable("sku") Long sku) {
+		return productJSONRepository.findBySku(sku);
+	}
 
-    // Example on how to register custom exception handler in case lookup does not return
-    // anything, and avoids HTTP status 500.
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public void handleMarkLogicResourceNotFoundException() {
-    }
+	@RequestMapping(value = "/products.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ProductSearchResult searchProducts(@RequestParam(required = false, value = "name") String name) {
+		if (StringUtils.isEmpty(name)) {
+			logger.info("Lookup all {} products...", productJSONRepository.count());
+			return productJSONRepository.findAll();
+		} else {
+			logger.info("Lookup products by name: {}", name);
+			return productJSONRepository.findByName(name);
+		}
+	}
 
+	@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public void handleMarkLogicResourceNotFoundException() {
+	}
+
+	@RequestMapping(value = "/records/{code}.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Record readRecord(@PathVariable("code") String code) {
+		return recordJSONRepository.findByCode(code);
+	}
+
+	@RequestMapping(value = "/records.json", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public RecordSearchResult searchRecords(@RequestParam(required = false, value = "name") String name) {
+		if (StringUtils.isEmpty(name)) {
+			logger.info("Lookup all records...");
+			return recordJSONRepository.findAll();
+		} else {
+			logger.info("Lookup records by name: {}", name);
+			return recordJSONRepository.findByName(name);
+		}
+	}
 }

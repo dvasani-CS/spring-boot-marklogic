@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.domain.Product;
 import com.example.domain.Products;
+import com.example.domain.Record;
+import com.example.domain.Records;
 import com.example.service.ProductJSONRepository;
+import com.example.service.RecordJSONRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 /**
  * Initialize some sample data (if collection are empty yet).
@@ -23,27 +25,40 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class BootstrapDataPopulator implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(BootstrapDataPopulator.class);
+	private static final Logger logger = LoggerFactory.getLogger(BootstrapDataPopulator.class);
 
-    @Autowired
-    protected ProductJSONRepository productJSONRepository;
+	@Autowired
+	protected ProductJSONRepository productJSONRepository;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        logger.info("~~~ Load bootstrap data");
-        if (productJSONRepository.count() == 0) {
-            importJSONProducts();
-        }
-    }
+	@Autowired
+	protected RecordJSONRepository recordJSONRepository;
 
-    private void importJSONProducts() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        InputStream inputStream = Products.class.getResourceAsStream("/sampledata/products.json");
-        Product[] products = mapper.readValue(inputStream, Product[].class);
-        for (Product product : products) {
-            productJSONRepository.add(product);
-        }
-        logger.info("Imported {} products to JSON store", products.length);
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		logger.info("~~~ Load bootstrap data");
+		if (productJSONRepository.count() == 0) {
+			// importJSONProducts();
+		}
+		// importJSONRecords();
+	}
 
+	private void importJSONProducts() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream inputStream = Products.class.getResourceAsStream("/sampledata/products.json");
+		Product[] products = mapper.readValue(inputStream, Product[].class);
+		for (Product product : products) {
+			productJSONRepository.add(product);
+		}
+		logger.info("Imported {} products to JSON store", products.length);
+	}
+
+	private void importJSONRecords() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream inputStream = Records.class.getResourceAsStream("/sampledata/recordSeries.json");
+		Record[] records = mapper.readValue(inputStream, Record[].class);
+		for (Record record : records) {
+			recordJSONRepository.add(record);
+		}
+		logger.info("Imported {} records to JSON store", records.length);
+	}
 }

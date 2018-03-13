@@ -1,4 +1,5 @@
 package com.example.controller;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,17 +14,17 @@ public class WelcomeController {
 	private String message = "Hello World";
 
 	@Value("${marklogic.host}")
-    private String host;
+	private String host;
 
-    @Value("${marklogic.port}")
-    private int port;
+	@Value("${marklogic.port}")
+	private int port;
 
-    @Value("${marklogic.username}")
-    private String username;
+	@Value("${marklogic.username}")
+	private String username;
 
-    @Value("${marklogic.password}")
-    private String password;
-    
+	@Value("${marklogic.password}")
+	private String password;
+
 	@RequestMapping("/")
 	public String welcome(Map<String, Object> model) {
 		model.put("message", this.message);

@@ -26,7 +26,8 @@ public class MarkLogicSampleApplication {
 		System.out.println("Connected to: " + client.getDatabase());
 		JSONDocumentManager docMgr = client.newJSONDocumentManager();
 		String docId = "/examples/products";
-		//docMgr.write(docId, new FileHandle().with(new File("/Users/dvasani/Documents/MS/workspace/demo/src/main/resources/sampledata/products.json")).withFormat(Format.JSON));
+		// docMgr.write(docId, new FileHandle().with(new
+		// File("/Users/dvasani/Documents/MS/workspace/demo/src/main/resources/sampledata/products.json")).withFormat(Format.JSON));
 		JsonNode jsonDocContents = docMgr.readAs(docId, JsonNode.class);
 		System.out.println("JSON output: " + jsonDocContents);
 		client.release();

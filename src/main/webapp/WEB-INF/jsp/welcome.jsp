@@ -85,6 +85,22 @@
 		</div>
 		<div>
 			<div class="form-group">
+				<label for="code_get" style="margin-right: 5px">Code:</label> <input
+					type="text" class="form-control" id="code_get" placeholder="Enter Code" />
+			</div>
+			<button type="button" class="btn btn-default" id="get_record"
+				style="margin-left: 20px; margin-right: 5px">Get record</button>
+		</div>
+		<div>
+			<div class="form-group">
+				<label for="name_get" style="margin-right: 5px">Name:</label> <input
+					type="text" class="form-control" id="name_get" placeholder="Enter Name" />
+			</div>
+			<button type="button" class="btn btn-default" id="get_record_name"
+				style="margin-left: 20px; margin-right: 5px">Get record</button>
+		</div>
+		<div>
+			<div class="form-group">
 				<label for="sku_del" style="margin-right: 5px">SKU:</label> <input
 					type="text" class="form-control" id="sku_del" placeholder="Enter SKU" />
 			</div>

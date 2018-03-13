@@ -23,6 +23,16 @@ $( document ).ready(function() {
 		var formData = $("#sku_del").val();
 		ajaxDelete(formData);
 	});
+	$("#get_record").click(function(event){
+		event.preventDefault();
+		var formData = $("#code_get").val();
+		ajaxGetRecords(formData);
+	});
+	$("#get_record_name").click(function(event){
+		event.preventDefault();
+		var formData = $("#name_get").val();
+		ajaxSearchRecords(formData);
+	});
 });
 function ajaxPost(formData){
     	$.ajax({
@@ -60,6 +70,36 @@ function ajaxGet(id){
 		type : "GET",
 		contentType : "application/json",
 		url : "/products/"+id+".json",
+		success : function() {
+			alert("Success!");
+			console.log();
+		},
+		error : function(e) {
+			alert("Error!")
+			console.log("ERROR: ", e);
+		}
+	});
+}
+function ajaxGetRecords(id){
+	$.ajax({
+		type : "GET",
+		contentType : "application/json",
+		url : "/records/"+id+".json",
+		success : function() {
+			alert("Success!");
+			console.log();
+		},
+		error : function(e) {
+			alert("Error!")
+			console.log("ERROR: ", e);
+		}
+	});
+}
+function ajaxSearchRecords(name){
+	$.ajax({
+		type : "GET",
+		contentType : "application/json",
+		url : "/records.json?name="+name,
 		success : function() {
 			alert("Success!");
 			console.log();

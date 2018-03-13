@@ -1,0 +1,7 @@
+<options xmlns="http://marklogic.com/appservices/search">
+	<values name="score">
+		<range type="xs:double">
+			<element ns="" name="score" />
+		</range>
+	</values>
+</options>

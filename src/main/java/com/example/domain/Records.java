@@ -7,18 +7,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "products")
+@XmlRootElement(name = "records")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Products {
+public class Records {
 
-	private Collection<Product> products;
+	private Collection<Record> records;
 
-	@XmlElement(name = "product")
-	public Collection<Product> getProducts() {
-		return products;
+	@XmlElement(name = "record")
+	public Collection<Record> getRecords() {
+		return records;
 	}
 
-	public void setProducts(Collection<Product> products) {
-		this.products = products;
+	public void setRecords(Collection<Record> records) {
+		this.records = records;
 	}
 }

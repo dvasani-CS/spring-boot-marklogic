@@ -11,22 +11,22 @@ import com.example.domain.ProductSearchResult;
  */
 public interface ProductRepository {
 
-    void add(Product product);
+	void add(Product product);
 
-    void remove(Long sku);
+	void remove(Long sku);
 
-    Product findBySku(Long sku);
+	Product findBySku(Long sku);
 
-    ProductSearchResult findAll();
+	ProductSearchResult findAll();
 
-    ProductSearchResult findByName(String name);
+	ProductSearchResult findByName(String name);
 
-    ProductSearchResult findByYear(int year);
-    // TODO: add ProductSearchResult findByPriceRange(Double min, Double max);
-    // TODO: add ProductSearchResult findByCategory(String category);
+	ProductSearchResult findByYear(int year);
+	// TODO: add ProductSearchResult findByPriceRange(Double min, Double max);
+	// TODO: add ProductSearchResult findByCategory(String category);
 
-    // TODO: add List<Category> findAllDistinctCategories();
+	// TODO: add List<Category> findAllDistinctCategories();
 
-    Long count();
+	Long count();
 
 }
